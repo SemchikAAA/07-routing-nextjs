@@ -49,7 +49,8 @@ export default function NoteForm({ onClose, onSuccess }: NoteFormProps) {
   const { mutate } = useMutation({
     mutationFn: (noteData: NewNoteData) => createNote(noteData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+      onSuccess();
     },
   });
 
@@ -59,7 +60,6 @@ export default function NoteForm({ onClose, onSuccess }: NoteFormProps) {
   ) => {
     mutate(values);
     actions.resetForm();
-    onSuccess();
     console.log(values.tag);
   };
 
@@ -91,7 +91,7 @@ export default function NoteForm({ onClose, onSuccess }: NoteFormProps) {
         <div className={css.formGroup}>
           <label htmlFor="tag">Tag</label>
           <Field id="tag" name="tag" as="select" className={css.select}>
-            <option value="">Сhoose something</option>
+            <option value="">Choose something</option>
             <option value="Todo">Todo</option>
             <option value="Work">Work</option>
             <option value="Personal">Personal</option>

@@ -13,8 +13,8 @@ export default function NoteDetailsClient() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["taskById", id],
-    queryFn: () => fetchNoteById(id),
+    queryKey: ["note", id],
+    queryFn: () => fetchNoteById(Number(id)),
     refetchOnMount: false,
   });
 
@@ -22,14 +22,16 @@ export default function NoteDetailsClient() {
     <div className={css.container}>
       {isLoading && <p>Loading, please wait...</p>}
       {error && !note && <p>Something went wrong.</p>}
-      <div className={css.item}>
-        <div className={css.header}>
-          <h2>{note?.title}</h2>
-          <button className={css.editBtn}>Edit note</button>
+      {note && (
+        <div className={css.item}>
+          <div className={css.header}>
+            <h2>{note?.title}</h2>
+            <button className={css.editBtn}>Edit note</button>
+          </div>
+          <p className={css.content}>{note?.content}</p>
+          <p className={css.date}>{note?.createdAt}</p>
         </div>
-        <p className={css.content}>{note?.content}</p>
-        <p className={css.date}>{note?.createdAt}</p>
-      </div>
+      )}
     </div>
   );
 }

@@ -13,10 +13,11 @@ type NoteDetailsProps = {
 export default async function NoteDetails({ params }: NoteDetailsProps) {
   const res = await params;
   const queryClient = new QueryClient();
+  const id = Number(res.id);
 
   await queryClient.prefetchQuery({
-    queryKey: ["taskById", res.id],
-    queryFn: () => fetchNoteById(res.id),
+    queryKey: ["note", id],
+    queryFn: () => fetchNoteById(id),
   });
 
   return (

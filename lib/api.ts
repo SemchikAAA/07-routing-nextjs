@@ -1,38 +1,34 @@
 import axios from "axios";
-import type { NewNoteData, Note, Tag } from "../types/note";
+import type { NewNoteData, Note, NotesResponse, Tag } from "../types/note";
 
-interface GetNotesResponse {
-  notes: Note[];
-  totalPages: number;
-}
 interface fetchNotesProps {
-  searchQuery: string;
+  debounceQuery: string;
   currentPage: number;
-  sortQuery: Tag;
+  filterByTag: Tag;
 }
 
 axios.defaults.baseURL = "https://notehub-public.goit.study/api";
 
 const myToken = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export async function fetchNotes({
-  searchQuery,
+  debounceQuery,
   currentPage,
-  sortQuery,
+  filterByTag,
 }: fetchNotesProps) {
-  await delay(2000);
-  const response = await axios.get<GetNotesResponse>(`/notes`, {
+  // await delay(2000);
+  const response = await axios.get<NotesResponse>(`/notes`, {
     params: {
-      search: searchQuery || undefined,
+      search: debounceQuery || undefined,
       page: currentPage,
-      tag: sortQuery || undefined,
+      tag: filterByTag || undefined,
       perPage: 9,
     },
     headers: { Authorization: `Bearer ${myToken}` },
   });
   return response.data;
 }
-export async function fetchNoteById(id: string) {
+export async function fetchNoteById(id: number) {
   const response = await axios.get<Note>(`/notes/${id}`, {
     headers: { Authorization: `Bearer ${myToken}` },
   });

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
-import { Tag } from "@/types/note";
+import { NotesResponse, Tag } from "@/types/note";
 import { fetchNotes } from "@/lib/api";
 import css from "./NotesPage.module.css";
 import SearchBox from "@/components/SearchBox/SearchBox";
@@ -12,10 +12,22 @@ import Pagination from "@/components/Pagination/Pagination";
 import NoteModal from "@/components/NoteModal/NoteModal";
 import NoteList from "@/components/NoteList/NoteList";
 
-export default function NotesClient() {
+type NotesClientProps = {
+  initialData: NotesResponse;
+  initialQuery: {
+    debounceQuery: string;
+    currentPage: number;
+    filterByTag: Tag;
+  };
+};
+
+export default function NotesClient({
+  initialData,
+  initialQuery,
+}: NotesClientProps) {
   const [searchQuery, setQuery] = useState("");
 
-  const [sortQuery, setSortQuery] = useState<Tag>("Personal");
+  const [filterByTag, setSortQuery] = useState<Tag>("Personal");
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -27,10 +39,21 @@ export default function NotesClient() {
   const [debounceQuery] = useDebounce(searchQuery, 500);
 
   const { data, isSuccess } = useQuery({
-    queryKey: ["tasks", debounceQuery, currentPage, sortQuery],
-    queryFn: () => fetchNotes({ searchQuery, currentPage, sortQuery }),
+    queryKey: ["notes", debounceQuery, currentPage, filterByTag],
+    queryFn: () =>
+      fetchNotes({
+        debounceQuery,
+        currentPage,
+        filterByTag,
+      }),
     refetchOnMount: false,
     placeholderData: keepPreviousData,
+    initialData:
+      debounceQuery === initialQuery.debounceQuery &&
+      currentPage === initialQuery.currentPage &&
+      filterByTag === initialQuery.filterByTag
+        ? initialData
+        : undefined,
   });
 
   const totalPages = data?.totalPages ?? 0;
