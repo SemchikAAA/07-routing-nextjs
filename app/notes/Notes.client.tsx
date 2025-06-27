@@ -3,11 +3,9 @@
 import { useState } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
-import { NotesResponse, Tag } from "@/types/note";
-import { fetchNotes } from "@/lib/api";
+import { fetchNotes, NotesResponse } from "@/lib/api";
 import css from "./NotesPage.module.css";
 import SearchBox from "@/components/SearchBox/SearchBox";
-import SortFilter from "@/components/SortFilter/SortFilter";
 import Pagination from "@/components/Pagination/Pagination";
 import NoteModal from "@/components/NoteModal/NoteModal";
 import NoteList from "@/components/NoteList/NoteList";
@@ -17,7 +15,6 @@ type NotesClientProps = {
   initialQuery: {
     debounceQuery: string;
     currentPage: number;
-    filterByTag: Tag;
   };
 };
 
@@ -26,8 +23,6 @@ export default function NotesClient({
   initialQuery,
 }: NotesClientProps) {
   const [searchQuery, setQuery] = useState("");
-
-  const [filterByTag, setSortQuery] = useState<Tag>("Personal");
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -39,19 +34,17 @@ export default function NotesClient({
   const [debounceQuery] = useDebounce(searchQuery, 500);
 
   const { data, isSuccess } = useQuery({
-    queryKey: ["notes", debounceQuery, currentPage, filterByTag],
+    queryKey: ["notes", debounceQuery, currentPage],
     queryFn: () =>
       fetchNotes({
         debounceQuery,
         currentPage,
-        filterByTag,
       }),
     refetchOnMount: false,
     placeholderData: keepPreviousData,
     initialData:
       debounceQuery === initialQuery.debounceQuery &&
-      currentPage === initialQuery.currentPage &&
-      filterByTag === initialQuery.filterByTag
+      currentPage === initialQuery.currentPage
         ? initialData
         : undefined,
   });
@@ -69,8 +62,6 @@ export default function NotesClient({
     <div className={css.app}>
       <div className={css.toolbar}>
         <SearchBox value={searchQuery} onSearch={setQuery} />
-
-        <SortFilter changeTag={setSortQuery} />
 
         {isSuccess && totalPages > 1 && (
           <Pagination
