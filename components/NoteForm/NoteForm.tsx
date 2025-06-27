@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import css from "./NoteForm.module.css";
 import { ErrorMessage, Field, Form, Formik, type FormikHelpers } from "formik";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -30,20 +29,6 @@ const initialValues: NewNoteData = {
 };
 
 export default function NoteForm({ onClose, onSuccess }: NoteFormProps) {
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
-
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
