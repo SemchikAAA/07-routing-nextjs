@@ -8,7 +8,6 @@ import { createNote } from "@/lib/api";
 
 interface NoteFormProps {
   onClose: () => void;
-  onSuccess: () => void;
 }
 
 const NewNoteSchema = Yup.object().shape({
@@ -28,14 +27,14 @@ const initialValues: NewNoteData = {
   tag: "Personal",
 };
 
-export default function NoteForm({ onClose, onSuccess }: NoteFormProps) {
+export default function NoteForm({ onClose }: NoteFormProps) {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
     mutationFn: (noteData: NewNoteData) => createNote(noteData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-      onSuccess();
+      onClose();
     },
   });
 
@@ -45,7 +44,6 @@ export default function NoteForm({ onClose, onSuccess }: NoteFormProps) {
   ) => {
     mutate(values);
     actions.resetForm();
-    console.log(values.tag);
   };
 
   return (

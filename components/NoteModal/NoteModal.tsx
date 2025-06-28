@@ -5,10 +5,9 @@ import { createPortal } from "react-dom";
 
 interface NoteModalProps {
   onClose: () => void;
-  onSuccess: () => void;
 }
 
-export default function NoteModal({ onClose, onSuccess }: NoteModalProps) {
+export default function NoteModal({ onClose }: NoteModalProps) {
   const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
       onClose();
@@ -36,9 +35,7 @@ export default function NoteModal({ onClose, onSuccess }: NoteModalProps) {
       role="dialog"
       aria-modal="true"
     >
-      <div className={css.modal}>
-        {<NoteForm onClose={onClose} onSuccess={onSuccess} />}
-      </div>
+      <div className={css.modal}>{<NoteForm onClose={onClose} />}</div>
     </div>,
     document.body
   );
