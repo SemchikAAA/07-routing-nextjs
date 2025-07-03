@@ -4,6 +4,7 @@ import type { NewNoteData, Note } from "../types/note";
 interface fetchNotesProps {
   debounceQuery: string;
   currentPage: number;
+  tagQuery: string;
 }
 
 export interface NotesResponse {
@@ -18,17 +19,20 @@ const myToken = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
 export async function fetchNotes({
   debounceQuery,
   currentPage,
+  tagQuery,
 }: fetchNotesProps) {
   const response = await axios.get<NotesResponse>(`/notes`, {
     params: {
       search: debounceQuery || undefined,
       page: currentPage,
       perPage: 9,
+      tag: tagQuery || undefined,
     },
     headers: { Authorization: `Bearer ${myToken}` },
   });
   return response.data;
 }
+
 export async function fetchNoteById(id: number) {
   const response = await axios.get<Note>(`/notes/${id}`, {
     headers: { Authorization: `Bearer ${myToken}` },

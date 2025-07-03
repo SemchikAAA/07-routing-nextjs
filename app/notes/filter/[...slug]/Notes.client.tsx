@@ -7,10 +7,12 @@ import { fetchNotes, NotesResponse } from "@/lib/api";
 import css from "./NotesPage.module.css";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import Pagination from "@/components/Pagination/Pagination";
-import NoteModal from "@/components/NoteModal/NoteModal";
 import NoteList from "@/components/NoteList/NoteList";
+import Modal from "@/components/Modal/Modal";
+import NoteForm from "@/components/NoteForm/NoteForm";
 
 type NotesClientProps = {
+  tagQuery: string;
   initialData: NotesResponse;
   initialQuery: {
     debounceQuery: string;
@@ -19,6 +21,7 @@ type NotesClientProps = {
 };
 
 export default function NotesClient({
+  tagQuery,
   initialData,
   initialQuery,
 }: NotesClientProps) {
@@ -34,11 +37,12 @@ export default function NotesClient({
   const [debounceQuery] = useDebounce(searchQuery, 500);
 
   const { data, isSuccess } = useQuery({
-    queryKey: ["notes", debounceQuery, currentPage],
+    queryKey: ["notes", debounceQuery, currentPage, tagQuery],
     queryFn: () =>
       fetchNotes({
         debounceQuery,
         currentPage,
+        tagQuery,
       }),
     refetchOnMount: false,
     placeholderData: keepPreviousData,
@@ -83,7 +87,7 @@ export default function NotesClient({
 
       {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
 
-      {modalOnClose && <NoteModal onClose={closeModal} />}
+      {modalOnClose && <Modal onClose={closeModal} />}
     </div>
   );
 }
