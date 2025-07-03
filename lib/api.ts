@@ -25,7 +25,7 @@ export async function fetchNotes({
     params: {
       search: debounceQuery || undefined,
       page: currentPage,
-      perPage: 9,
+      perPage: 12,
       tag: tagQuery || undefined,
     },
     headers: { Authorization: `Bearer ${myToken}` },

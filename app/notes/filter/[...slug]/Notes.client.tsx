@@ -29,7 +29,7 @@ export default function NotesClient({
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [modalOnClose, setModalOnClose] = useState(false);
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   const onPageChange = ({ selected }: { selected: number }) =>
     setCurrentPage(selected + 1);
@@ -56,11 +56,11 @@ export default function NotesClient({
   const totalPages = data?.totalPages ?? 0;
 
   const createNoteBtn = () => {
-    setModalOnClose(true);
+    setIsOpenModal(true);
   };
 
   const closeModal = () => {
-    setModalOnClose(false);
+    setIsOpenModal(false);
   };
 
   const heandleSerach = (debounceQuery: string) => {
@@ -87,7 +87,11 @@ export default function NotesClient({
 
       {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
 
-      {modalOnClose && <Modal onClose={closeModal} />}
+      {isOpenModal && (
+        <Modal onClose={closeModal}>
+          <NoteForm onClose={closeModal} />
+        </Modal>
+      )}
     </div>
   );
 }
