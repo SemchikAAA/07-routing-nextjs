@@ -2,7 +2,7 @@ import Link from "next/link";
 import css from "./TagsMenu.module.css";
 import { Tag } from "@/types/note";
 
-const tags: Tag[] = ["Work", "Personal", "Meeting", "Shopping", "Todo"];
+const tags: Tag[] = ["Meeting", "Personal", "Shopping", "Todo", "Work"];
 
 interface TagsMenuProps {
   tagsMenuToggle: () => void;
