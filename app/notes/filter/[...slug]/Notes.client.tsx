@@ -31,9 +31,6 @@ export default function NotesClient({
 
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const onPageChange = ({ selected }: { selected: number }) =>
-    setCurrentPage(selected + 1);
-
   const [debounceQuery] = useDebounce(searchQuery, 500);
 
   const { data, isSuccess } = useQuery({
@@ -63,20 +60,20 @@ export default function NotesClient({
     setIsOpenModal(false);
   };
 
-  const heandleSerach = (debounceQuery: string) => {
+  const handleSearch = (debounceQuery: string) => {
     setQuery(debounceQuery);
     setCurrentPage(1);
   };
   return (
     <div className={css.app}>
       <div className={css.toolbar}>
-        <SearchBox value={searchQuery} onSearch={heandleSerach} />
+        <SearchBox value={searchQuery} onSearch={handleSearch} />
 
         {isSuccess && totalPages > 1 && (
           <Pagination
             totalPages={totalPages}
             currentPage={currentPage}
-            onPageChange={onPageChange}
+            onPageChange={setCurrentPage}
           />
         )}
 
