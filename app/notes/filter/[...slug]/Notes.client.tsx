@@ -14,16 +14,11 @@ import NoteForm from "@/components/NoteForm/NoteForm";
 type NotesClientProps = {
   tagQuery: string;
   initialData: NotesResponse;
-  initialQuery: {
-    debounceQuery: string;
-    currentPage: number;
-  };
 };
 
 export default function NotesClient({
   tagQuery,
   initialData,
-  initialQuery,
 }: NotesClientProps) {
   const [searchQuery, setQuery] = useState("");
 
@@ -35,19 +30,10 @@ export default function NotesClient({
 
   const { data, isSuccess } = useQuery({
     queryKey: ["notes", debounceQuery, currentPage, tagQuery],
-    queryFn: () =>
-      fetchNotes({
-        debounceQuery,
-        currentPage,
-        tagQuery,
-      }),
+    queryFn: () => fetchNotes(debounceQuery, currentPage, tagQuery),
     refetchOnMount: false,
     placeholderData: keepPreviousData,
-    initialData:
-      debounceQuery === initialQuery.debounceQuery &&
-      currentPage === initialQuery.currentPage
-        ? initialData
-        : undefined,
+    initialData,
   });
 
   const totalPages = data?.totalPages ?? 0;

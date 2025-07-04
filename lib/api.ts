@@ -1,12 +1,6 @@
 import axios from "axios";
 import type { NewNoteData, Note } from "../types/note";
 
-interface fetchNotesProps {
-  debounceQuery: string;
-  currentPage: number;
-  tagQuery: string;
-}
-
 export interface NotesResponse {
   notes: Note[];
   totalPages: number;
@@ -16,14 +10,14 @@ axios.defaults.baseURL = "https://notehub-public.goit.study/api";
 
 const myToken = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
 
-export async function fetchNotes({
-  debounceQuery,
-  currentPage,
-  tagQuery,
-}: fetchNotesProps) {
+export async function fetchNotes(
+  query: string,
+  currentPage: number,
+  tagQuery: string
+) {
   const response = await axios.get<NotesResponse>(`/notes`, {
     params: {
-      search: debounceQuery || undefined,
+      search: query || undefined,
       page: currentPage,
       perPage: 12,
       tag: tagQuery || undefined,
